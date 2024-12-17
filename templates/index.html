@@ -2,6 +2,8 @@
 
 {% block content %}
 <div id="galleryOuter" class="container mt-4">
+    <h2 class="text-center">Galerie d'images</h2>
+
     <!-- Carousel -->
     <div id="galleryCarousel" class="carousel slide" data-ride="carousel">
         <div class="carousel-inner">
@@ -9,7 +11,6 @@
                 {% if loop.index == 1 %}
                     <div class="carousel-item active">
                         <img class="d-block w-100" src="{{ image }}" alt="Image {{ loop.index }}">
-                        <!-- Boutons sous l'image -->
                         <div class="text-center mt-3">
                             <div class="btn-group">
                                 <button class="btn btn-outline-danger" onclick="updateQuantity('{{ loop.index0 }}', -1)">-</button>
@@ -22,7 +23,6 @@
                 {% else %}
                     <div class="carousel-item">
                         <img class="d-block w-100" src="{{ image }}" alt="Image {{ loop.index }}">
-                        <!-- Boutons sous l'image -->
                         <div class="text-center mt-3">
                             <div class="btn-group">
                                 <button class="btn btn-outline-danger" onclick="updateQuantity('{{ loop.index0 }}', -1)">-</button>
@@ -36,20 +36,24 @@
             {% endfor %}
         </div>
 
-        <!-- Flèches pour le carousel -->
+        <!-- Flèches personnalisées pour naviguer -->
         <a class="carousel-control-prev" href="#galleryCarousel" role="button" data-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="carousel-control-prev-icon custom-arrow" aria-hidden="true"></span>
             <span class="sr-only">Précédent</span>
         </a>
         <a class="carousel-control-next" href="#galleryCarousel" role="button" data-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="carousel-control-next-icon custom-arrow" aria-hidden="true"></span>
             <span class="sr-only">Suivant</span>
         </a>
     </div>
 </div>
 
+<!-- Bouton pour voir le panier -->
+<div class="text-center mt-4">
+    <a href="{{ url_for('cart') }}" class="btn btn-success">Voir le panier</a>
+</div>
+
 <script>
-    // Mettre à jour la quantité
     function updateQuantity(index, change) {
         let quantityElement = document.getElementById(`quantity-${index}`);
         let currentQuantity = parseInt(quantityElement.innerText);
@@ -59,7 +63,6 @@
         }
     }
 
-    // Ajouter au panier
     function addToCart(image, index) {
         let quantity = document.getElementById(`quantity-${index}`).innerText;
         fetch("/add_to_cart", {

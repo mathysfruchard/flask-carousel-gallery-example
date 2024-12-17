@@ -1,7 +1,8 @@
-from flask import Flask, render_template, url_for, request, jsonify
+from flask import Flask, render_template, url_for, request, jsonify, redirect, session
 import os
 
 app = Flask(__name__)
+app.secret_key = 'secret_key'  # Clé secrète pour stocker des sessions
 
 # Configuration du dossier static pour les images
 IMAGE_FOLDER = 'static'
@@ -15,11 +16,23 @@ def index():
 
 @app.route("/add_to_cart", methods=["POST"])
 def add_to_cart():
-    # Récupérer les données depuis le bouton d'ajout
+    # Stocker la commande dans la session
     data = request.json
     image = data.get("image")
-    quantity = data.get("quantity", 1)
+    quantity = int(data.get("quantity", 1))
+
+    if "cart" not in session:
+        session["cart"] = []
+
+    session["cart"].append({"image": image, "quantity": quantity})
+    session.modified = True  # Pour sauvegarder les modifications
+
     return jsonify({"status": "success", "image": image, "quantity": quantity})
+
+@app.route("/cart")
+def cart():
+    cart_items = session.get("cart", [])
+    return render_template("cart.html", cart_items=cart_items, title="Récapitulatif de commande")
 
 if __name__ == "__main__":
     app.run(debug=True)

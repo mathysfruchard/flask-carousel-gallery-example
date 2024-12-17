@@ -1,20 +1,38 @@
+/* Fond sombre avec dégradé */
+body {
+    background: linear-gradient(to bottom, #1e1e2f, #2b2b3b);
+    color: #fff;
+    font-family: Arial, sans-serif;
+}
+
+/* Taille et mise en forme des images */
 .carousel-item img {
-    height: 80vh; /* Les images prennent 80% de la hauteur de l'écran */
+    height: 80vh; /* Taille fixe pour le carousel */
     object-fit: scale-down;
 }
 
+/* Personnalisation des flèches du carousel */
+.custom-arrow {
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    padding: 10px;
+    color: #333;
+    opacity: 1;
+    transition: background-color 0.3s ease;
+}
+
+.custom-arrow:hover {
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+/* Mise en forme des miniatures */
 .img-thumbnail {
-    cursor: pointer;
     height: 10vh;
     width: 10vw;
-}
-
-.img-thumbnail img {
     object-fit: cover;
-    height: 100%;
-    width: 100%;
 }
 
+/* Boutons ajustés */
 .btn-group .btn {
     font-size: 1.2rem;
     width: 40px;
