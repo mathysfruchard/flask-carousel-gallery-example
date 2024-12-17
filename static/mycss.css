@@ -1,16 +1,24 @@
 .carousel-item img {
-    object-fit: scale-down; /* this is what ensures aspect ratio is maintained*/
-    height: 80vh; /* carousel image takes up 80% of screen height */
+    height: 80vh; /* Les images prennent 80% de la hauteur de l'écran */
+    object-fit: scale-down;
+}
+
+.img-thumbnail {
+    cursor: pointer;
+    height: 10vh;
+    width: 10vw;
 }
 
 .img-thumbnail img {
-    /* required to size the thumbnails - change object-fit if
-    cover is not the desired behaviour....cover fits the thumbnail area 
-    without any change to aspect ratio, but will crop the image as required.
-    */
-    height: 10vh;
-    width: 10vw;
-    min-width: 10vw;
-    min-height: 10vh;
     object-fit: cover;
+    height: 100%;
+    width: 100%;
+}
+
+.btn-group .btn {
+    font-size: 1.2rem;
+    width: 40px;
+    height: 40px;
+    line-height: 30px;
+    text-align: center;
 }

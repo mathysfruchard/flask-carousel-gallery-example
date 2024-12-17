@@ -1,21 +1,25 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, url_for, request, jsonify
 import os
 
 app = Flask(__name__)
 
-@app.route('/')
-def gallery():
-    images = get_all_files_in_dir(os_dir_join_args=['static'],
-                                  file_filter='.jpg')
-    return render_template('index.html', title="Gallery", images=images)
+# Configuration du dossier static pour les images
+IMAGE_FOLDER = 'static'
+app.config['UPLOAD_FOLDER'] = IMAGE_FOLDER
 
-def get_all_files_in_dir(os_dir_join_args, file_filter=None):
-    dir = os.path.join(*os_dir_join_args)
-    files = os.listdir(path=dir)
-    if file_filter:
-        files = [os.path.join(dir, file)
-                 for file in files if file.find(file_filter) >= 0]
-    return files
+@app.route("/")
+def index():
+    # Récupérer les images directement dans static/
+    images = [url_for('static', filename=img) for img in os.listdir(IMAGE_FOLDER) if img.endswith(('jpg', 'png', 'jpeg'))]
+    return render_template("index.html", images=images, title="Galerie d'images")
+
+@app.route("/add_to_cart", methods=["POST"])
+def add_to_cart():
+    # Récupérer les données depuis le bouton d'ajout
+    data = request.json
+    image = data.get("image")
+    quantity = data.get("quantity", 1)
+    return jsonify({"status": "success", "image": image, "quantity": quantity})
 
 if __name__ == "__main__":
     app.run(debug=True)

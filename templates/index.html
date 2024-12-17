@@ -1,44 +1,74 @@
 {% extends "base.html" %}
 
 {% block content %}
-<!-- container for both the carousel and thumbnails -->
-<div id="galleryOuter" class="container-fluid">
-    <!-- carousel section -->
+<div id="galleryOuter" class="container mt-4">
+    <!-- Carousel -->
     <div id="galleryCarousel" class="carousel slide" data-ride="carousel">
-        <div id="carouselInner" class="carousel-inner">
-            <!-- loop through all images passed in -->
+        <div class="carousel-inner">
             {% for image in images %}
-            <!-- for the first image, need to set it as active -->
-            {% if loop.index == 1 %}
-            <div class="carousel-item active">
-                <img class="d-block w-100" src="{{ image }}">
-            </div>
-            {% else %}
-            <div class="carousel-item">
-                <img class="d-block w-100" src="{{ image }}">
-            </div>
-            {% endif %}
+                {% if loop.index == 1 %}
+                    <div class="carousel-item active">
+                        <img class="d-block w-100" src="{{ image }}" alt="Image {{ loop.index }}">
+                        <!-- Boutons sous l'image -->
+                        <div class="text-center mt-3">
+                            <div class="btn-group">
+                                <button class="btn btn-outline-danger" onclick="updateQuantity('{{ loop.index0 }}', -1)">-</button>
+                                <span id="quantity-{{ loop.index0 }}" class="btn btn-outline-secondary">1</span>
+                                <button class="btn btn-outline-success" onclick="updateQuantity('{{ loop.index0 }}', 1)">+</button>
+                            </div>
+                            <button class="btn btn-primary ml-2" onclick="addToCart('{{ image }}', '{{ loop.index0 }}')">Ajouter au panier</button>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="carousel-item">
+                        <img class="d-block w-100" src="{{ image }}" alt="Image {{ loop.index }}">
+                        <!-- Boutons sous l'image -->
+                        <div class="text-center mt-3">
+                            <div class="btn-group">
+                                <button class="btn btn-outline-danger" onclick="updateQuantity('{{ loop.index0 }}', -1)">-</button>
+                                <span id="quantity-{{ loop.index0 }}" class="btn btn-outline-secondary">1</span>
+                                <button class="btn btn-outline-success" onclick="updateQuantity('{{ loop.index0 }}', 1)">+</button>
+                            </div>
+                            <button class="btn btn-primary ml-2" onclick="addToCart('{{ image }}', '{{ loop.index0 }}')">Ajouter au panier</button>
+                        </div>
+                    </div>
+                {% endif %}
             {% endfor %}
         </div>
-        <!-- renders the prev/next controller -->
+
+        <!-- Flèches pour le carousel -->
         <a class="carousel-control-prev" href="#galleryCarousel" role="button" data-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="sr-only">Previous</span>
+            <span class="sr-only">Précédent</span>
         </a>
         <a class="carousel-control-next" href="#galleryCarousel" role="button" data-slide="next">
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="sr-only">Next</span>
+            <span class="sr-only">Suivant</span>
         </a>
-    </div>
-    <!-- renders the thumbnail -->
-    <div class="row flex-nowrap overflow-auto justify-content-center" id="gallery">
-        {% for image in images %}
-            <div class="img-thumbnail">
-                <img src="{{ image }}" data-target="#galleryCarousel" data-slide-to="{{ loop.index - 1 }}"
-                    alt="{{ image }}" class="img-fluid">
-            </div>
-        {% endfor %}
     </div>
 </div>
 
+<script>
+    // Mettre à jour la quantité
+    function updateQuantity(index, change) {
+        let quantityElement = document.getElementById(`quantity-${index}`);
+        let currentQuantity = parseInt(quantityElement.innerText);
+        let newQuantity = currentQuantity + change;
+        if (newQuantity >= 1) {
+            quantityElement.innerText = newQuantity;
+        }
+    }
+
+    // Ajouter au panier
+    function addToCart(image, index) {
+        let quantity = document.getElementById(`quantity-${index}`).innerText;
+        fetch("/add_to_cart", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ image: image, quantity: quantity })
+        }).then(response => response.json())
+          .then(data => alert(`Ajouté au panier : ${data.image} (Quantité: ${data.quantity})`))
+          .catch(error => console.error('Erreur:', error));
+    }
+</script>
 {% endblock content %}
