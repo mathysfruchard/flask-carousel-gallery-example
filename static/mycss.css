@@ -40,3 +40,13 @@ body {
     line-height: 30px;
     text-align: center;
 }
+.list-group-item {
+    background-color: #f8f9fa;
+    color: #333;
+    border: 1px solid #ddd;
+}
+
+.btn-outline-danger, .btn-outline-dark {
+    margin-left: 5px;
+}
+
